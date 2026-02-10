@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine 💗</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow:hidden;
+  background: radial-gradient(circle at top, #ff9a9e, #fad0c4);
+}
+
+/* Floating hearts */
+.bg-heart{
+  position:fixed;
+  font-size:18px;
+  animation:floatUp linear infinite;
+  opacity:0.7;
+  z-index:-1;
+}
+
+@keyframes floatUp{
+  from{ transform:translateY(100vh) scale(0.5);}
+  to{ transform:translateY(-10vh) scale(1.2);}
+}
+
+/* Card */
+.card{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  padding:40px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
+  max-width:420px;
+  display:none;
+  z-index:5;
+}
+
+h1{ color:#ff4d6d; }
+
+button{
+  border:none;
+  padding:12px 25px;
+  margin:10px;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#yesBtn{ background:#ff4d6d; color:white;}
+#yesBtn:hover{ transform:scale(1.1);}
+#noBtn{ background:#ddd; position:relative;}
+
+/* Intro text */
+#intro{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:28px;
+  color:#8b0000;
+  text-align:center;
+  width:80%;
+}
+
+/* Polaroids */
+.polaroid{
+  position:absolute;
+  width:140px;
+  background:white;
+  padding:10px 10px 20px 10px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  transform:rotate(var(--rot));
+  transition:0.3s ease;
+}
+.polaroid img{ width:100%; display:block;}
+.polaroid:hover{
+  transform:scale(1.1) rotate(0deg);
+  z-index:10;
+}
+
+/* Positions */
+#p1{ top:10%; left:5%; --rot:-12deg;}
+#p2{ bottom:12%; left:13%; --rot:8deg;}
+#p3{ top:18%; right:6%; --rot:10deg;}
+#p4{ bottom:10%; right:12%; --rot:-8deg;}
+#p5{ top:52%; left:2%; --rot:5deg;}
+#p6{ top:60%; right:2%; --rot:-6deg;}
+
+/* Romantic scene */
+#loveScene{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:fadeIn 1s ease;
+  z-index:50;
+}
+
+.loveContent{
+  text-align:center;
+  color:white;
+  animation:pop 0.8s ease;
+}
+
+.loveContent h1{ font-size:42px;}
+.loveContent p{ font-size:20px;}
+
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+@keyframes pop{ from{transform:scale(0.7);} to{transform:scale(1);} }
+
+/* Places */
+.places{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:20px;
+}
+
+.place{
+  width:140px;
+  cursor:pointer;
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
+  color:black;
+  transition:0.3s;
+}
+
+.place:hover{ transform:scale(1.1);}
+
+.place img{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro"></div>
+
+<div class="polaroid" id="p1"><img src="IMG_1.jpeg"></div>
+<div class="polaroid" id="p2"><img src="IMG_2.jpeg"></div>
+<div class="polaroid" id="p3"><img src="IMG_3.jpeg"></div>
+<div class="polaroid" id="p4"><img src="IMG_4.jpg"></div>
+<div class="polaroid" id="p5"><img src="IMG_5.jpeg"></div>
+<div class="polaroid" id="p6"><img src="IMG_6.jpeg"></div>
+
+<div class="card">
+  <h1>Will you be my Valentine, Riya ma 💗</h1>
+  <button id="yesBtn">Yes 😍</button>
+  <button id="noBtn">No 🙈</button>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="Sirikkadhey.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 🔥 FIREBASE MODULE SCRIPT -->
+<script type="module">
+
+/* ===== FIREBASE SETUP ===== */
+
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import { getFirestore, addDoc, collection }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCQ9KyC27v_uhw9V1c2cWN4KxRcuzCRkms",
+  authDomain: "valentinesapp-ae69d.firebaseapp.com",
+  projectId: "valentinesapp-ae69d",
+  storageBucket: "valentinesapp-ae69d.firebasestorage.app",
+  messagingSenderId: "556364656661",
+  appId: "1:556364656661:web:e6b45d454755453b145e1c",
+  measurementId: "G-01CEVPG5ST"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* Floating hearts */
+setInterval(()=>{
+  const heart=document.createElement('div');
+  heart.className='bg-heart';
+  heart.innerText='💗';
+  heart.style.left=Math.random()*100+'vw';
+  heart.style.animationDuration=(3+Math.random()*4)+'s';
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),7000);
+},300);
+
+/* Typewriter */
+const msg="Hey Riya... I have something to ask you ❤️";
+let i=0;
+const intro=document.getElementById('intro');
+
+function type(){
+  if(i<msg.length){
+    intro.innerHTML+=msg.charAt(i);
+    i++;
+    setTimeout(type,60);
+  }else{
+    setTimeout(()=>{
+      intro.style.display='none';
+      document.querySelector('.card').style.display='block';
+    },1200);
+  }
+}
+window.onload=type;
+
+/* No escape */
+const noBtn=document.getElementById('noBtn');
+const card=document.querySelector('.card');
+
+noBtn.addEventListener('mouseover',()=>{
+  const r=card.getBoundingClientRect();
+  noBtn.style.position='absolute';
+  noBtn.style.left=Math.random()*(r.width-120)+'px';
+  noBtn.style.top=Math.random()*(r.height-60)+'px';
+});
+
+/* YES FLOW */
+document.getElementById('yesBtn').onclick=()=>{
+  document.getElementById('bgMusic').play();
+  card.style.opacity=0;
+
+  setTimeout(()=>{
+    const scene=document.createElement('div');
+    scene.id="loveScene";
+    scene.innerHTML=`
+      <div class="loveContent">
+        <h1>She said YES 💗</h1>
+        <p>You just made my heart ridiculously happy ✨</p>
+        <button onclick="showPlaces()">Plan our date ❤️</button>
+      </div>`;
+    document.body.appendChild(scene);
+  },600);
+};
+
+/* Show places */
+window.showPlaces=function(){
+  document.getElementById('loveScene').innerHTML=`
+    <div class="loveContent">
+      <h1>Where shall we go? ✈️</h1>
+      <div class="places">
+        <div class="place" onclick="selectPlace('Bessy Beach 🌊')">
+          <img src="bessy_beach.jpg"><p>Bessy</p>
+        </div>
+        <div class="place" onclick="selectPlace('Ubasti Cafe ☕')">
+          <img src="Ubasti_cafe.jpg"><p>Ubasti Cafe</p>
+        </div>
+        <div class="place" onclick="selectPlace('Go Kart 🚗')">
+          <img src="Go-Karting-in-Chennai.jpg"><p>Go Kart</p>
+        </div>
+        <div class="place" onclick="selectPlace('Tada Waterfalls 🌿')">
+          <img src="Tada_falls.jpg"><p>Tada</p>
+        </div>
+      </div>
+    </div>`;
+};
+
+/* SAVE RESPONSE SILENTLY */
+window.selectPlace = async function(place){
+
+  await addDoc(collection(db,"responses"),{
+    place: place,
+    time: new Date().toISOString(),
+    agent: navigator.userAgent
+  });
+
+  document.querySelector('.loveContent').innerHTML=
+    `<h1>${place} it is 💕</h1>
+     <p>I can't wait ❤️</p>`;
+}
+
+</script>
+</body>
+</html>
