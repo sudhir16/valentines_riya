@@ -147,6 +147,48 @@ button{
   height:100px;
   object-fit:cover;
 }
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 768px) {
+
+  body{
+    overflow:auto; /* allow scrolling on phone */
+  }
+
+  /* Smaller card */
+  .card{
+    width:85%;
+    padding:25px;
+  }
+
+  /* Smaller polaroids */
+  .polaroid{
+    width:90px;
+    padding:6px 6px 12px 6px;
+    transform:rotate(0deg); /* remove heavy tilt */
+  }
+
+  /* Reposition nicely around card */
+
+  #p1{ top:3%; left:2%; }
+  #p2{ bottom:5%; left:3%; }
+  #p3{ top:5%; right:2%; }
+  #p4{ bottom:6%; right:3%; }
+  #p5{ top:60%; left:1%; }
+  #p6{ top:62%; right:1%; }
+
+  /* Intro text size */
+  #intro{
+    font-size:20px;
+    width:90%;
+  }
+
+  button{
+    font-size:14px;
+    padding:10px 18px;
+  }
+
+}
 </style>
 </head>
 
